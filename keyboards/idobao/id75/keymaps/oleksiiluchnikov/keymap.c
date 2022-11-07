@@ -1,5 +1,11 @@
 #include QMK_KEYBOARD_H
 
+bool is_macos  = 1;
+bool menu_used  = 0;
+bool vimvis_status  = 0;
+uint16_t hold_timer = 0;
+uint16_t current_layer = 0;
+
 // Layers
 #define _ENGRAM 0
 #define _NUMBERS 1
@@ -57,10 +63,7 @@
 #define BACK TO(_ENGRAM)
 #define ___________ KC_LEAD
 
-uint16_t hold_timer = 0;
-uint16_t current_layer = 0;
-bool menu_used = false;
-bool vimvis_status = false;
+
 
 enum custom_keycodes {
   REPEAT = SAFE_RANGE,
@@ -76,6 +79,8 @@ enum custom_keycodes {
   SYMBOLS,
   VIMVIS_B,
   VIMVIS_E,
+  OPENAPP,
+  WIN
 };
 
  const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -108,7 +113,7 @@ enum custom_keycodes {
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________),
 
  [_MENU] = LAYOUT_ortho_5x15(
-       KC_ESC,       KC_Q,       KC_Z,     KC_TAB,___________,___________,___________,___________,___________,___________,___________,    KC_BTN1,___________,     KC_GRV,       BACK,
+       KC_ESC,       KC_Q,       KC_Z,     KC_TAB,___________,___________,___________,___________,___________,___________,___________,    KC_BTN1,    OPENAPP,     KC_GRV,       BACK,
       KC_BSPC,     KC_SPC,    DOT_SPC,___________,___________,___________,___________,___________,___________,___________,___________,    KC_COLN,   COMM_SPC,    KC_MINS,    KC_QUOT,
   ___________,   KC_ENTER,   QUES_SPC,        INV,___________,___________,___________,___________,___________,___________,___________,    VIMHINT,   EXLM_SPC,       LINT,     ALFRED,
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,     REPEAT,___________,___________,___________,___________,
@@ -143,7 +148,7 @@ enum custom_keycodes {
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________),
 
  [_NAVIGATION] = LAYOUT_ortho_5x15(
-  ___________,___________,___________,   KC_RIGHT,___________,___________,___________,___________,___________,___________,___________,    QK_BOOT,___________,___________,       BACK,
+  ___________,___________,        WIN,   KC_RIGHT,___________,___________,___________,___________,___________,___________,___________,    QK_BOOT,___________,___________,       BACK,
   ___________,___________,___________,    KC_LEFT,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,      KC_UP,    KC_DOWN,___________,___________,
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,     REPEAT,___________,___________,___________,___________,
@@ -213,7 +218,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       process_repeat_key(keycode, record);
   #endif
   switch (keycode) {
-      case LEADER:
+    case KC_ESC:
+      if (record->event.pressed) {
+        if (is_macos) {
+          // Enter normal mode in https://github.com/dbalatero/VimMode.spoon
+          SEND_STRING(SS_LCTL(SS_LSFT(SS_LALT(SS_TAP(X_9)))));
+        }
+      }
+      return true;
+    case LEADER:
       if (record->event.pressed) {
         hold_timer = timer_read();
         layer_move(_NUMBERS);
@@ -273,6 +286,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       return true;
+    case OPENAPP:
+      if (record->event.pressed) {
+          SEND_STRING(SS_LCTL(SS_LSFT(SS_LALT(SS_LGUI(SS_TAP(X_A))))));
+      }
+      return false;
+    case WIN:
+      if (record->event.pressed) {
+        if (is_macos) {
+          is_macos = 0;
+        }
+        else {
+          is_macos = 1;
+        }
+      }
+      return false;
     case SYMBOLS:
       if (record->event.pressed) {
         hold_timer = timer_read();
