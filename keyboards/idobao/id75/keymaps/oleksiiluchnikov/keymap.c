@@ -7,11 +7,11 @@ uint16_t hold_timer = 0;
 uint16_t current_layer = 0;
 
 // Layers
-#define _ENGRAM 0
+#define _ENGRAMM 0
 #define _NUMBERS 1
 #define _SYMBOLS 2
 #define _NAVIGATION 3
-#define _INVERTS 4
+#define _ENGRAM 4
 #define _MENU 5
 #define _VIM 6
 #define _OSTICK 7
@@ -30,8 +30,10 @@ uint16_t current_layer = 0;
 #define GUI_C RGUI_T(KC_C)
 
 // Layer Triggers
-#define INV OSL(_INVERTS)
-#define INV_R LT(_INVERTS, KC_R)
+#define TOREV DF(_ENGRAM)
+#define TOSYM DF(_SYMBOLS)
+#define TONUM DF(_NUMBERS)
+#define INV_R LT(_ENGRAM, KC_R)
 #define VIMVIS_V LT(_VIMVIS, KC_V)
 #define NAV_P LT(_NAVIGATION, KC_P)
 #define OSTICK OSL(_OSTICK)
@@ -60,7 +62,7 @@ uint16_t current_layer = 0;
 #define OS_MEH OSM(MOD_MEH)
 #define OS_HYPR OSM(MOD_HYPR)
 
-#define BACK TO(_ENGRAM)
+#define BACK TO(_ENGRAMM)
 #define ___________ KC_LEAD
 
 
@@ -85,7 +87,7 @@ enum custom_keycodes {
 
  const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-/* _ENGRAM
+/* _ENGRAMM
  +-----------+-----------+-----------+-----------+                                                                                   +-----------+-----------+-----------+-----------+
  |           |           |           |           |                                                                                   |           |           |           |           |
  |     v     |     w     |     d     |     l     |                                                                                   |     u     |     o     |     y     |     b     |
@@ -105,7 +107,7 @@ enum custom_keycodes {
                                                  +-----------+                                                           +-----------+
 */
 
- [_ENGRAM] = LAYOUT_ortho_5x15(
+ [_ENGRAMM] = LAYOUT_ortho_5x15(
      VIMVIS_V,       KC_W,       KC_D,       KC_L,___________,___________,___________,___________,___________,___________,___________,       KC_U,       KC_O,       KC_Y,       KC_B,
         GUI_N,      ALT_S,     SHFT_T,      CTL_H,___________,___________,___________,___________,___________,___________,___________,      CTL_A,     SHFT_E,      ALT_I,      GUI_C,
         NAV_P,       KC_F,       KC_M,      INV_R,___________,___________,___________,___________,___________,___________,___________,       KC_K,       KC_J,       KC_X,       KC_G,
@@ -114,8 +116,8 @@ enum custom_keycodes {
 
  [_MENU] = LAYOUT_ortho_5x15(
        KC_ESC,       KC_Q,       KC_Z,     KC_TAB,___________,___________,___________,___________,___________,___________,___________,    KC_BTN1,    OPENAPP,     KC_GRV,       BACK,
-      KC_BSPC,     KC_SPC,    DOT_SPC,___________,___________,___________,___________,___________,___________,___________,___________,    KC_COLN,   COMM_SPC,    KC_MINS,    KC_QUOT,
-  ___________,   KC_ENTER,   QUES_SPC,        INV,___________,___________,___________,___________,___________,___________,___________,    VIMHINT,   EXLM_SPC,       LINT,     ALFRED,
+      KC_BSPC,     KC_SPC,    DOT_SPC,      TOSYM,___________,___________,___________,___________,___________,___________,___________,    KC_COLN,   COMM_SPC,    KC_MINS,    KC_QUOT,
+        TONUM,   KC_ENTER,   QUES_SPC,      TOREV,___________,___________,___________,___________,___________,___________,___________,    VIMHINT,   EXLM_SPC,       LINT,     ALFRED,
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,     REPEAT,___________,___________,___________,___________,
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________),
 
@@ -161,7 +163,7 @@ enum custom_keycodes {
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,     REPEAT,___________,___________,___________,___________,
   ___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________,___________),
 
- [_INVERTS] = LAYOUT_ortho_5x15(
+ [_ENGRAM] = LAYOUT_ortho_5x15(
          KC_B,       KC_Y,       KC_O,       KC_U,___________,___________,___________,___________,___________,___________,___________,       KC_L,       KC_D,       KC_W,       KC_V,
         GUI_C,      ALT_I,     SHFT_E,      CTL_A,___________,___________,___________,___________,___________,___________,___________,      CTL_H,     SHFT_T,      ALT_S,      GUI_N,
          KC_G,       KC_X,       KC_J,       KC_K,___________,___________,___________,___________,___________,___________,___________,       KC_R,       KC_M,       KC_F,       KC_P,
@@ -233,7 +235,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       else {
         if (layer_state_is(_NUMBERS)) {
-          layer_move(_ENGRAM);
+          layer_move(_ENGRAMM);
         }
         if (timer_elapsed(hold_timer) < 200) {
           qk_leader_start(); // 
@@ -248,7 +250,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       else {
         if (layer_state_is(_MENU)) {
-          layer_move(_ENGRAM);
+          layer_move(_ENGRAMM);
         } 
         if ((timer_elapsed(hold_timer) < 140)
           && (prelast_keycode == last_keycode)) {
@@ -308,7 +310,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       else {
         if (layer_state_is(_SYMBOLS)) {
-          layer_move(_ENGRAM);
+          layer_move(_ENGRAMM);
         }
         if (timer_elapsed(hold_timer < 100)) {
         }
@@ -589,46 +591,59 @@ void keyboard_post_init_user(void) {
     rgblight_enable_noeeprom();
     rgblight_mode_noeeprom(1);
 };
+
 layer_state_t layer_state_set_user(layer_state_t state) {
     if (vimvis_status) {
       del_mods(MOD_MASK_SHIFT);
       }
     vimvis_status = false;
     switch (get_highest_layer(state)) {
-    case _INVERTS:
-           rgblight_sethsv_noeeprom(HSV_GREEN);
-           rgblight_mode_noeeprom(1);
-      break;
-    case _MENU:
-           rgblight_sethsv_noeeprom(HSV_RED);
-           rgblight_mode_noeeprom(1);
-      break;
-    case _SYMBOLS:
-           rgblight_sethsv_noeeprom(HSV_ORANGE);
-           rgblight_mode_noeeprom(1);
-      break;
-    case _VIMVIS:
-      vimvis_status = true;
-      if (vimvis_status){
-        add_mods(MOD_MASK_SHIFT);
-        }
-      break;
-    case _NUMBERS:
-           rgblight_sethsv_noeeprom(HSV_BLUE);
-           rgblight_mode_noeeprom(1);
-      break;
-    case _VIM:
-           rgblight_sethsv_noeeprom(HSV_PURPLE);
-           rgblight_mode_noeeprom(1);
-      break;
-    case _NAVIGATION:
-           rgblight_sethsv_noeeprom(HSV_CYAN);
-           rgblight_mode_noeeprom(1);
-      break;
-    default: //  for any other layers, or the default layer
-           rgblight_sethsv_noeeprom(HSV_YELLOW);
-           rgblight_mode_noeeprom(1);
-      break;
+      case _ENGRAMM:
+          SEND_STRING(SS_TAP(X_F13));
+          rgblight_sethsv_noeeprom(HSV_GREEN);
+          rgblight_mode_noeeprom(1);
+        break;
+      case _ENGRAM:
+          SEND_STRING(SS_TAP(X_F17));
+          rgblight_sethsv_noeeprom(HSV_GREEN);
+          rgblight_mode_noeeprom(1);
+        break;
+      case _MENU:
+        SEND_STRING(SS_TAP(X_F16));
+        rgblight_sethsv_noeeprom(HSV_RED);
+        rgblight_mode_noeeprom(1);
+        break;
+      case _SYMBOLS:
+        SEND_STRING(SS_TAP(X_F15));
+        rgblight_sethsv_noeeprom(HSV_ORANGE);
+        rgblight_mode_noeeprom(1);
+        break;
+      case _VIMVIS:
+        SEND_STRING(SS_TAP(X_F19));
+        vimvis_status = true;
+        if (vimvis_status){
+          add_mods(MOD_MASK_SHIFT);
+          }
+        break;
+      case _NUMBERS:
+        SEND_STRING(SS_TAP(X_F14));
+        rgblight_sethsv_noeeprom(HSV_BLUE);
+        rgblight_mode_noeeprom(1);
+        SEND_STRING(SS_TAP(X_F14));
+        break;
+      case _VIM:
+        rgblight_sethsv_noeeprom(HSV_PURPLE);
+        rgblight_mode_noeeprom(1);
+        break;
+      case _NAVIGATION:
+        SEND_STRING(SS_TAP(X_F18));
+        rgblight_sethsv_noeeprom(HSV_CYAN);
+        rgblight_mode_noeeprom(1);
+        break;
+      default: //  for any other layers, or the default layer
+        rgblight_sethsv_noeeprom(HSV_YELLOW);
+        rgblight_mode_noeeprom(1);
+        break;
     }
   return state;
 }
